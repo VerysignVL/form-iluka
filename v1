@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      background-color: #f4f4f4;
+    }
+
+    .form-container {
+      padding: 16px;
+      border-radius: 12px;
+      max-width: 400px;
+      margin: 32px auto;
+      background: white;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .date-group {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      width: 48%;
+    }
+
+    .full-width {
+      width: 100%;
+    }
+
+    label {
+      font-size: 12px;
+      color: #555;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .date-input,
+    .bedroom-select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      background: #fff;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .date-input:focus,
+    .bedroom-select:focus {
+      outline: none;
+      border-color: #b0b0b0;
+    }
+
+    /* Style for bedroom options similar to the Elementor style */
+    .bedroom-select label {
+        display: inline-block;
+        border: 2px solid lightgrey;
+        background-color: white;
+        color: black;
+        padding: 10px 20px;
+        margin: 5px;
+        cursor: pointer;
+        transition: all 0.3s;
+        border-radius: 5px;
+    }
+
+    /* Hide the actual radio input */
+    .bedroom-select input[type="radio"] {
+        display: none;
+    }
+
+    /* Style for selected bedroom options */
+    .bedroom-select input[type="radio"]:checked + label {
+        color: white;
+        background-color: black;
+        border-color: black;
+    }
+    
+    button {
+      background-color: #FF5A5F;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      display: block;
+      width: 100%;
+      margin-top: 16px;
+      font-size: 16px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      text-transform: uppercase;
+    }
+
+    button:hover {
+      background-color: #E45552;
+    }
+
+    /* Custom styles for the flatpickr date picker */
+    .flatpickr-calendar {
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .flatpickr-day {
+      color: #555;
+    }
+
+    .flatpickr-day.selected,
+    .flatpickr-day.startRange,
+    .flatpickr-day.endRange {
+      background: #FF5A5F;
+      color: white;
+    }
+
+    .flatpickr-day.inRange {
+      background: #FFD2D2;
+      color: #555;
+    }
+
+    .flatpickr-day:hover {
+      background: #f0f0f0;
+    }
+
+    .flatpickr-weekdays {
+      background: #fff;
+    }
+
+    .flatpickr-weekday {
+      color: #555;
+    }
+
+    .flatpickr-prev-month,
+    .flatpickr-next-month {
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+    <div class="form-container">
+        <div class="date-group">
+            <div class="form-group">
+                <label for="checkInDate">Check-In Date:</label>
+                <input type="text" id="checkInDate" class="date-input" placeholder="dd/mm/yy" readonly>
+            </div>
+            <div class="form-group">
+                <label for="checkOutDate">Check-Out Date:</label>
+                <input type="text" id="checkOutDate" class="date-input" placeholder="dd/mm/yy" readonly>
+            </div>
+        </div>
+        <div class="form-group full-width bedroom-select">
+    <input type="radio" id="bedroom5" name="bedrooms" value="5">
+    <label for="bedroom5">5 Bedrooms</label> <!-- Ensure this label's 'for' matches the input's 'id' -->
+    
+    <input type="radio" id="bedroom6" name="bedrooms" value="6">
+    <label for="bedroom6">6 Bedrooms</label> <!-- Ensure this label's 'for' matches the input's 'id' -->
+    
+    <input type="radio" id="bedroom7" name="bedrooms" value="7">
+    <label for="bedroom7">7 Bedrooms</label> <!-- Ensure this label's 'for' matches the input's 'id' -->
+</div>
+
+
+        <button id="bookNow">Book Now</button>
+    </div>
+    <!-- flatpickr script link -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <!-- Your existing script will be adjusted and placed here. -->
+</body>
+</html>
+<script>
+    // Initialize flatpickr on the check-in and check-out fields
+    var fp = flatpickr("#checkInDate", {
+        mode: "range",
+        altInput: true,
+        altFormat: "F j, Y",
+        dateFormat: "Y-m-d",
+        minDate: "today",
+        onChange: function(selectedDates) {
+            if (selectedDates.length === 2) {
+                document.getElementById("checkInDate").value = this.formatDate(selectedDates[0], "F j, Y");
+                document.getElementById("checkOutDate").value = this.formatDate(selectedDates[1], "F j, Y");
+            }
+        }
+    });
+
+    // Event listener for the Book Now button
+    document.getElementById("bookNow").addEventListener("click", function() {
+        // Check if dates are selected
+        if (fp.selectedDates.length === 2) {
+            // Get formatted dates
+            var checkInDate = fp.formatDate(fp.selectedDates[0], "Y-m-d");
+            var checkOutDate = fp.formatDate(fp.selectedDates[1], "Y-m-d");
+            
+            // Get the selected bedroom value and calculate the guests
+            var selectedBedroomRadio = document.querySelector('input[name="bedrooms"]:checked');
+            var totalGuests = selectedBedroomRadio ? parseInt(selectedBedroomRadio.value) * 2 : 1; // Default to 1 guest if no bedroom is selected
+
+            // Construct the booking URL
+            var redirectUrl = `https://booking.soobali.com/properties/ilukavilladirect?locale=en&items[0][adults]=${totalGuests}&items[0][children]=0&items[0][infants]=0&currency=IDR&checkInDate=${checkInDate}&checkOutDate=${checkOutDate}&trackPage=yes`;
+            
+            // Redirect to the booking URL
+            window.location.href = redirectUrl;
+        } else {
+            alert("Please select both check-in and check-out dates.");
+        }
+    });
+
+    // Event listeners for bedroom radio buttons to handle guest count
+    document.querySelectorAll('input[name="bedrooms"]').forEach(function(radio) {
+        radio.addEventListener('change', function() {
+            // When a bedroom number is selected, calculate the guests automatically
+            var guests = parseInt(this.value) * 2; // Assuming each bedroom accommodates 2 guests
+            
+            // Here you can update a hidden input for guests if you have one,
+            // or store the guests value to be used when form is submitted
+            console.log("Number of guests set to: " + guests);
+            // For example:
+            // document.getElementById("hiddenGuestsInput").value = guests;
+        });
+    });
+</script>
+
